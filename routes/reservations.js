@@ -1,11 +1,14 @@
-// routes/reservations.js
 const express = require('express');
 const router = express.Router();
+const { checkAuth } = require('../middleware/authMiddleware');
+const { validateMovie, checkReservationsAvailable } = require('../middleware/moviesMiddleware');
 const reservationsController = require('../controllers/reservationsController');
-const authenticateUser = require('../middlewares/authenticate');
+const authenticateUser = require('../middleware/authenticate');
 
-// Define routes for reservations
-router.post('/movie/:movieUid/reservations', authenticateUser, reservationsController.reserveSeat);
-router.post('/reservations/:uid/confirm', authenticateUser, reservationsController.confirmReservation);
+// Route to create a reservation for a movie
+router.post('/:movieUid/reservations', authenticateUser, validateMovie, checkReservationsAvailable, reservationsController.createReservation);
+
+// Route to confirm a reservation
+router.post('/:uid/confirm', checkAuth, reservationsController.confirmReservation);
 
 module.exports = router;

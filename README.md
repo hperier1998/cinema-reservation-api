@@ -35,5 +35,6 @@ The server will start listening on port 3000 by default.
 
 The API endpoints available in this project are as follows:
 
-- `POST /api/movie/:movieUid/reservations`: Create a reservation.
+- `POST /api/movie/:movieUid/reservations`: Create a reservation for a movie.
 - `POST /api/reservations/:uid/confirm`: Confirm a reservation.
+- `GET /api/movie/:movieUid/reservations`: Retrieve reservations for a movie.
