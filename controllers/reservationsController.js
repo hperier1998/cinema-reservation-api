@@ -52,3 +52,14 @@ exports.listReservationsForMovie = (req, res) => {
         res.status(200).json(rows);
     });
 };
+
+exports.getAllReservationByUid = (req,res) => {
+    const {uid} = req.uid;
+    const query = `SELECT * from reservations WHERE uid = ?`
+    db.all(query, [uid], (err,rows) => {
+        if(err){
+            return res.status(500).json({error: 'Internal server error'})
+        }
+        res.status(200).json(rows)
+    })
+}
