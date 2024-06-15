@@ -2,6 +2,10 @@
 
 This is a web API project for managing cinema reservations.
 
+## Authors
+- Hadrien PERIER (hperier1998)
+- Jeremy MAGNE (RayZiaX)
+
 ## Prerequisites
 
 Before running this project, ensure you have the following installed:
@@ -39,3 +43,13 @@ The API endpoints available in this project are as follows:
 - `POST /api/reservations/:uid/confirm`: Confirm a reservation.
 - `GET /api/movie/:movieUid/reservations`: Retrieve reservations for a movie.
 - `GET /reservations/{uid}`: Retrieves reservation details.
+- `GET /api/cinema`: List the cinemas.
+- `POST /api/cinema`: Create a cinema.
+- `GET /api/cinema/:uid`: Retrieve cinema by id.
+- `PUT /api/cinema/:uid`: Update a cinema.
+- `DELETE /api/cinema/:uid`: Delete a cinema.
+- `POST /cinema/{cinemaUid}/rooms`: Create room associate at cinema.
+- `GET /cinema/{cinemaUid}/rooms`: Get all rooms associate at cinema.
+- `GET /cinema/{cinemaUid}/rooms/{uid}`: Retrieve room associate at cinema by id
+- `PUT /cinema/{cinemaUid}/rooms/{uid}`: Update room associate at cinema by id
+- `DELETE /cinema/{cinemaUid}/rooms/{uid}`: Delete room associate at cinema by id.

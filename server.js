@@ -25,6 +25,31 @@ db.serialize(() => {
         expiresAt TEXT,
         userId INTEGER
     )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS cinemas(
+        uid TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        createdAt TEXT,
+        updatedAt TEXT,
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS rooms(
+        uid TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        seats INTEGER NOT NULL,
+        uidCinema TEXT,
+        createdAt TEXT,
+        updatedAt TEXT,
+        FOREIGN KEY REFERENCES (uidCinema) cinemas(uid)
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS seances(
+        uid TEXT PRIMARY KEY NOT NULL,
+        movieId TEXT NOT NULL,
+        date TEXT NOT NULL,
+        createdAt TEXT,
+        updatedAt TEXT,
+    )`);
 });
 
 // Routes
