@@ -42,6 +42,7 @@ The API endpoints available in this project are as follows:
 - `POST /api/movie/:movieUid/reservations`: Create a reservation for a movie.
 - `POST /api/reservations/:uid/confirm`: Confirm a reservation.
 - `GET /api/movie/:movieUid/reservations`: Retrieve reservations for a movie.
+- `GET /reservations/{uid}`: Retrieves reservation details.
 - `GET /api/cinema`: List the cinemas.
 - `POST /api/cinema`: Create a cinema.
 - `GET /api/cinema/:uid`: Retrieve cinema by id.
