@@ -128,3 +128,114 @@ exports.deleteRoomById = (req,res) => {
         res.status(200).json(`room deleted`);
     });
 }
+
+// List sessions in a room
+exports.listSessionsInRoom = (req, res) => {
+    const { cinemaUid, roomUid } = req.params;
+
+    const query = `
+        SELECT s.uid, m.name as movie, s.date
+        FROM sessions s
+        JOIN movies m ON s.movieUid = m.uid
+        WHERE s.cinemaUid = ? AND s.roomUid = ?
+    `;
+
+    db.all(query, [cinemaUid, roomUid], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        const response = rows.map(row => ({
+            uid: row.uid,
+            movie: row.movie,
+            date: row.date
+        }));
+        res.status(200).json(response);
+    });
+};
+
+// Create a session in a room
+exports.createSessionInRoom = (req, res) => {
+    const { cinemaUid, roomUid } = req.params;
+    const { movie, date } = req.body;
+
+    if (!movie || !date) {
+        return res.status(422).json({ error: 'Movie and date are required' });
+    }
+
+    const uid = uuidv4();
+    const createdAt = new Date().toISOString();
+    const updatedAt = new Date().toISOString();
+
+    const query = `
+        INSERT INTO sessions (uid, movieUid, cinemaUid, roomUid, date, createdAt, updatedAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(query, [uid, movie, cinemaUid, roomUid, date, createdAt, updatedAt], function (err) {
+        if (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        const response = {
+            uid,
+            movie,
+            date
+        };
+
+        res.status(201).json(response);
+    });
+};
+
+// Modify a session in a room
+exports.modifySessionInRoom = (req, res) => {
+    const { cinemaUid, roomUid, uid } = req.params;
+    const { movie, date } = req.body;
+
+    if (!movie || !date) {
+        return res.status(422).json({ error: 'Movie and date are required' });
+    }
+
+    const updatedAt = new Date().toISOString();
+
+    const query = `
+        UPDATE sessions
+        SET movieUid = ?, date = ?, updatedAt = ?
+        WHERE uid = ? AND cinemaUid = ? AND roomUid = ?
+    `;
+
+    db.run(query, [movie, date, updatedAt, uid, cinemaUid, roomUid], function (err) {
+        if (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Session not found' });
+        }
+
+        const response = {
+            uid,
+            movie,
+            date
+        };
+
+        res.status(200).json(response);
+    });
+};
+
+// Delete a session in a room
+exports.deleteSessionInRoom = (req, res) => {
+    const { uid } = req.params;
+
+    const query = `DELETE FROM seances WHERE uid = ?`;
+    db.run(query, [uid], function (err) {
+        if (err) {
+            return res.status(500).json({ error: "Internal server error" });
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).json({ error: "Session not found" });
+        }
+
+        res.status(200).json({ message: "Session deleted successfully" });
+    });
+};

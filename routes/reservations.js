@@ -12,4 +12,5 @@ router.post('/:movieUid/reservations', authenticateUser, validateMovie, checkRes
 router.post('/:uid/confirm', checkAuth, reservationsController.confirmReservation);
 
 router.get('/reservations/:uid',checkAuth, reservationsController.getAllReservationByUid)
+
 module.exports = router;
