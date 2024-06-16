@@ -37,13 +37,13 @@ The server will start listening on port 3000 by default.
 
 ## API Documentation
 
-The api listens on the IP address http://localhost:3000/api/<route> or http://127.0.0.1:5002/api/<route>
+The api listens on the IP address http://localhost:3000/api/{endpoint route} or http://127.0.0.1:5002/api/{endpoint route}
 
 The API endpoints (routes) available in this project are as follows:
 
-- `POST /movie/:movieUid/reservations`: Create a reservation for a movie.
-- `POST /reservations/:uid/confirm`: Confirm a reservation.
-- `GET /movie/:movieUid/reservations`: Retrieve reservations for a movie.
+- `POST /movie/{movieUi}/reservations`: Create a reservation for a movie.
+- `POST /reservations/{uid}/confirm`: Confirm a reservation.
+- `GET /movie/{movieUi}/reservations`: Retrieve reservations for a movie.
 - `GET /reservations/{uid}`: Retrieves reservation details.
 - `GET /cinema`: List the cinemas.
 - `POST /cinema`: Create a cinema.
