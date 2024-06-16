@@ -5,7 +5,7 @@ const validateMovie = async (req, res, next) => {
     const { movieUid } = req.params;
 
     try {
-        const response = await axios.get(`http://localhost:5001/api/movies/${movieUid}`);
+        const response = await axios.get(`http://localhost:5000/api/movies/${movieUid}`);
         if (response.data) {
             req.movie = response.data;
             next();
@@ -25,5 +25,6 @@ const checkReservationsAvailable = (req, res, next) => {
         res.status(422).json({ error: 'No reservations available for this movie' });
     }
 };
+
 
 module.exports = { validateMovie, checkReservationsAvailable };
