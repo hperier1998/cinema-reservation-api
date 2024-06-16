@@ -39,7 +39,7 @@ The server will start listening on port 3000 by default.
 
 ## API Documentation
 
-The api listens on the IP address http://localhost:3000/api/{route} or http://127.0.0.1:5002/api/{route}
+The api listens on the IP address http://localhost:3000/api/{route} or http://127.0.0.1:3000/api/{route}
 
 The API endpoints (routes) available in this project are as follows:
 
