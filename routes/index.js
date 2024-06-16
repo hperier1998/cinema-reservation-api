@@ -1,13 +1,12 @@
-// routes/index.js
 const express = require('express');
 const router = express.Router();
 
-const cinemasRoutes = require('./cinemas');
-const reservationsRoutes = require('./reservations');
-const moviesRoutes = require('./movies');
+const movieRoutes = require('./movie');
+const reservationRoutes = require('./reservations');
+const cinemaRoutes = require('./cinema')
 
-router.use('/cinemas', cinemasRoutes);
-router.use('/reservations', reservationsRoutes);
-router.use('/movies', moviesRoutes);
+router.use('/movie', movieRoutes);
+router.use('/reservations', reservationRoutes);
+router.use('/cinema', cinemaRoutes)
 
 module.exports = router;

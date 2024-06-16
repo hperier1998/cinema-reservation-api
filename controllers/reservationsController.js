@@ -1,78 +1,65 @@
-// controllers/reservationsController.js
 const { v4: uuidv4 } = require('uuid');
-const { getReservationById, updateReservation } = require('../models/reservationModel');
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./data/database.db');
 
-exports.reserveSeat = (req, res) => {
+// Create reservation
+exports.createReservation = (req, res) => {
+    const { movieUid } = req.params;
     const { sceance, nbSeats, room } = req.body;
+    const uid = uuidv4();
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
+    const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(); // 2 hours from now
 
-    if (!sceance || !nbSeats || !room) {
-        return res.status(422).json({ error: "Invalid reservation object" });
-    }
+    const query = `INSERT INTO reservations (uid, sceance, nbSeats, room, status, createdAt, updatedAt, expiresAt, userId, movieUid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const params = [uid, sceance, nbSeats, room, 'pending', createdAt, updatedAt, expiresAt, req.user.id, movieUid];
 
-    try {
-        // Logic to handle reservation
-        const reservation = {
-            uid: uuidv4(),
-            sceance,
-            nbSeats,
-            room,
-            status: "reserved",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            expiresAt: new Date(Date.now() + 3600000).toISOString(), // Example: expires in 1 hour
-            userId: req.user.userId // Assuming the user ID is available in the user object
-        };
-
-        // Save reservation to the database
-        db.run(`INSERT INTO reservations (uid, sceance, nbSeats, room, status, createdAt, updatedAt, expiresAt, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [reservation.uid, reservation.sceance, reservation.nbSeats, reservation.room, reservation.status, reservation.createdAt, reservation.updatedAt, reservation.expiresAt, reservation.userId],
-            (err) => {
-                if (err) {
-                    console.error(err);
-                    res.status(500).json({ error: "Internal server error" });
-                } else {
-                    res.status(201).json(reservation);
-                }
-            });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+    db.run(query, params, function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.status(201).json({ uid, rank: this.lastID, status: 'pending', createdAt, updatedAt, expiresAt });
+    });
 };
 
-exports.confirmReservation = async (req, res) => {
+// Confirm reservation
+exports.confirmReservation = (req, res) => {
     const { uid } = req.params;
-    const user = req.user;
 
-    try {
-        // Fetch the reservation
-        const reservation = await getReservationById(uid);
+    const query = `UPDATE reservations SET status = ?, updatedAt = ? WHERE uid = ? AND userId = ?`;
+    const params = ['confirmed', new Date().toISOString(), uid, req.user.id];
 
-        // Check if the reservation exists
-        if (!reservation) {
-            return res.status(404).json({ error: "Reservation not found" });
+    db.run(query, params, function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Internal server error' });
         }
-
-        // Check if the reservation belongs to the connected user
-        if (reservation.userId !== user.userId) {
-            return res.status(403).json({ error: "Unauthorized. This reservation does not belong to you" });
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Reservation not found or not authorized' });
         }
-
-        // Check if the reservation has expired
-        if (new Date(reservation.expiresAt) < new Date()) {
-            return res.status(410).json({ error: "The reservation has expired" });
-        }
-
-        // Logic to confirm the reservation
-        reservation.status = "confirmed";
-        reservation.updatedAt = new Date().toISOString();
-
-        // Update reservation in the database
-        await updateReservation(reservation);
-
-        res.status(201).json({ message: "Reservation confirmed successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+        res.status(201).json({ message: 'Reservation confirmed successfully' });
+    });
 };
+
+// List reservations for a movie
+exports.listReservationsForMovie = (req, res) => {
+    const { movieUid } = req.params;
+
+    const query = `SELECT * FROM reservations WHERE movieUid = ?`;
+    db.all(query, [movieUid], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        res.status(200).json(rows);
+    });
+};
+
+exports.getAllReservationByUid = (req,res) => {
+    const {uid} = req.uid;
+    const query = `SELECT * from reservations WHERE uid = ?`
+    db.all(query, [uid], (err,rows) => {
+        if(err){
+            return res.status(500).json({error: 'Internal server error'})
+        }
+        res.status(200).json(rows)
+    })
+}

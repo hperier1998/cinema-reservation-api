@@ -1,6 +1,6 @@
-// middlewares/authenticate.js
 const axios = require('axios');
 
+// Middleware to authenticate user
 const authenticateUser = async (req, res, next) => {
     const { login, password } = req.body;
     if (!login || !password) {
