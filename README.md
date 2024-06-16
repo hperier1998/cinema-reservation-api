@@ -12,6 +12,8 @@ Before running this project, ensure you have the following installed:
 
 - [Node.js](https://nodejs.org/)
 - [SQLite3](https://www.sqlite.org/download.html)
+- [Authenticate API](https://github.com/RayZiaX/authenticate-movie-api)
+- [Movie API](https://github.com/RayZiaX/MovieAPI)
 
 ## Getting Started
 
@@ -40,6 +42,8 @@ The server will start listening on port 3000 by default.
 The api listens on the IP address http://localhost:3000/api/{route} or http://127.0.0.1:5002/api/{route}
 
 The API endpoints (routes) available in this project are as follows:
+
+**ENDPOINT: Ensure you have the 2 other APIs (`Authenticate API` and `Movie API`) already running.**
 
 - `POST /movie/{movieUi}/reservations`: Create a reservation for a movie.
 - `POST /reservations/{uid}/confirm`: Confirm a reservation.
